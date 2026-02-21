@@ -14,11 +14,9 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Cloud DBs (Neon, Supabase, etc.) require SSL; local Docker does not.
-# Detect by checking if the URL is pointing to localhost / a Docker service name.
-_db_url = settings.DATABASE_URL
-_is_local = any(host in _db_url for host in ("localhost", "127.0.0.1", "@postgres", "@db"))
-_connect_args = {} if _is_local else {"sslmode": "require"}
+# SSL is handled via ?sslmode=require in the DATABASE_URL itself.
+# Do not pass sslmode in connect_args — psycopg2 reads it from the URL.
+_connect_args = {}
 
 # PostgreSQL engine configuration with connection pooling
 engine_args = {
