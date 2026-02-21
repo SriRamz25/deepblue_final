@@ -1,0 +1,12 @@
+[build]
+  command   = "flutter build web --release --dart-define=API_URL=$API_URL"
+  publish   = "build/web"
+
+[build.environment]
+  # Set API_URL in Netlify dashboard: Site Settings → Environment Variables
+  # e.g. API_URL = https://sentra-pay-backend.onrender.com
+
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200

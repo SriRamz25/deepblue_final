@@ -1,0 +1,38 @@
+services:
+  # The FastAPI Backend
+  - type: web
+    name: sentra-pay-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      # ── Neon PostgreSQL ────────────────────────────────────────────────────
+      # Paste your Neon connection string from neon.tech dashboard:
+      # postgresql://user:password@ep-xxx.region.aws.neon.tech/neondb?sslmode=require
+      - key: DATABASE_URL
+        sync: false
+      # ── JWT ───────────────────────────────────────────────────────────────
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 60
+      # ── App ───────────────────────────────────────────────────────────────
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: false
+      # ── CORS — update to your Netlify URL after first deploy ──────────────
+      - key: CORS_ORIGINS
+        value: "*"
+      # ── Cloudinary (fill in Render dashboard) ─────────────────────────────
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.11.0
