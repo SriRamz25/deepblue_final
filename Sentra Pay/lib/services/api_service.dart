@@ -43,22 +43,25 @@ class ApiService {
               "full_name": name,
               "phone": phone,
               "password": password,
-              "email": ?email,
-              "upi_id": ?upiId,
+              "email": email,
+              "upi_id": upiId,
             }),
           )
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
         final error = jsonDecode(response.body);
-        print("Backend Signup Error: ${error['detail']}");
+        final detail = error['detail'] ?? 'Signup failed';
+        print("Backend Signup Error: $detail");
+        // Return error so callers can show the real message
+        return {'__error__': true, 'detail': detail};
       }
     } catch (e) {
       print("Signup Error: $e");
+      return {'__error__': true, 'detail': 'Could not connect to server. Please try again.'};
     }
-    return null;
   }
 
   static Future<Map<String, dynamic>?> login(
@@ -197,6 +200,7 @@ class ApiService {
           color: data['color'],
           background: data['background'],
           label: data['label'],
+          shouldBlock: data['should_block'] == true,
         );
       } else {
         print(

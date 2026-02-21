@@ -378,6 +378,12 @@ class RiskOrchestrator:
                 "total_transactions": context.receiver_info.get("total_transactions", 0) if context.receiver_info else 0,
             },
 
+            # ── BLOCK FLAG: fires ONLY when receiver AND amount both RED ─
+            "should_block": (
+                layers["L3"]["receiver_risk_score"] >= 75
+                and layers["L2"]["amount_risk_score"] >= 75
+            ),
+
             # Debug (layer breakdown for development)
             "debug": {
                 "layer1_relationship": layers["L1"],

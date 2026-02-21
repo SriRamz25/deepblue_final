@@ -223,10 +223,10 @@ class _SignInScreenState extends State<SignInScreen>
                               controller: _passwordController,
                               obscureText: _obscurePassword,
                               cursorColor: Colors.black,
-                              style: TextStyle(fontFamily: 'Manrope', 
+                              style: const TextStyle(fontFamily: 'Manrope', 
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: PremiumStyle.primaryText,
+                                color: Color(0xFF0F172A),
                               ),
                               decoration: InputDecoration(
                                 hintText: 'Password',

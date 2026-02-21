@@ -51,6 +51,7 @@ class _EnhancedRiskResultScreenState extends State<EnhancedRiskResultScreen>
   double _amountScore = 0.0;
   double _receiverScore = 0.0;
   bool _isLocalAnalysis = false;
+  bool _shouldBlock = false; // true when receiver RED + amount RED → payment blocked
 
   @override
   void initState() {
@@ -94,6 +95,7 @@ class _EnhancedRiskResultScreenState extends State<EnhancedRiskResultScreen>
       _amountScore = result.amountScore;
       _receiverScore = result.receiverScore;
       _isFlaggedReceiver = result.isFlaggedReceiver;
+      _shouldBlock = result.shouldBlock;
     });
   }
 
@@ -713,6 +715,112 @@ class _EnhancedRiskResultScreenState extends State<EnhancedRiskResultScreen>
                             ),
                           ),
 
+                        // ── BLOCKED STATE: receiver RED + amount RED ─────
+                        if (_shouldBlock) ...[
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                            margin: const EdgeInsets.only(bottom: 12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFEEEE),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: const Color(0xFFFFCDD2)),
+                            ),
+                            child: Column(
+                              children: [
+                                const Icon(Icons.block_rounded,
+                                    color: Color(0xFFD32F2F), size: 36),
+                                const SizedBox(height: 10),
+                                const Text(
+                                  'Transaction Blocked',
+                                  style: TextStyle(
+                                    fontFamily: 'Manrope',
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 17,
+                                    color: Color(0xFFD32F2F),
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                const Text(
+                                  'Our fraud engine has blocked this payment.\nSuspicious receiver + unusually high amount detected.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Manrope',
+                                    fontSize: 13,
+                                    color: Color(0xFF666666),
+                                    height: 1.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFFF3F3),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(color: const Color(0xFFFFCDD2)),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            const Text('Receiver Risk',
+                                                style: TextStyle(fontFamily: 'Manrope', fontSize: 11, color: Color(0xFF666666))),
+                                            Text('${(_receiverScore * 100).toStringAsFixed(0)}/100',
+                                                style: const TextStyle(fontFamily: 'Manrope', fontWeight: FontWeight.w700, fontSize: 14, color: Color(0xFFD32F2F))),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFFF3F3),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(color: const Color(0xFFFFCDD2)),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            const Text('Amount Risk',
+                                                style: TextStyle(fontFamily: 'Manrope', fontSize: 11, color: Color(0xFF666666))),
+                                            Text('${(_amountScore * 100).toStringAsFixed(0)}/100',
+                                                style: const TextStyle(fontFamily: 'Manrope', fontWeight: FontWeight.w700, fontSize: 14, color: Color(0xFFD32F2F))),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: null, // disabled — cannot proceed
+                              icon: const Icon(Icons.block_rounded, color: Colors.white54),
+                              label: const Text(
+                                'Payment Blocked',
+                                style: TextStyle(
+                                  fontFamily: 'Manrope',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 15,
+                                  color: Colors.white54,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFB71C1C),
+                                disabledBackgroundColor: const Color(0xFFB71C1C),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14)),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                              ),
+                            ),
+                          ),
+                        ] else ...[
+
                         // Payment button
                         CustomButton(
                           text: _riskCategory == RiskCategory.low
@@ -1051,6 +1159,7 @@ class _EnhancedRiskResultScreenState extends State<EnhancedRiskResultScreen>
                             }
                           },
                         ),
+                        ], // end else (not blocked)
                       ],
                     ),
                   ],

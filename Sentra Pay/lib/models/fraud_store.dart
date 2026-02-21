@@ -19,6 +19,7 @@ class RiskAnalysisResult {
   final String? color;
   final String? background;
   final String? label;
+  final bool shouldBlock; // true when receiver RED + amount RED → payment blocked
 
   RiskAnalysisResult({
     required this.score,
@@ -34,6 +35,7 @@ class RiskAnalysisResult {
     this.color,
     this.background,
     this.label,
+    this.shouldBlock = false,
   });
 }
 

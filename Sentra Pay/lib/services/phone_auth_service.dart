@@ -38,13 +38,11 @@ class PhoneAuthService {
         upiId: upiId,
       );
 
-      if (data != null) {
+      if (data != null && data['__error__'] != true) {
         return {'success': true, 'data': data};
       }
-      return {
-        'success': false,
-        'error': 'Phone number may already be registered.',
-      };
+      final msg = data?['detail'] ?? 'Phone number may already be registered.';
+      return {'success': false, 'error': msg};
     } catch (e) {
       return {'success': false, 'error': 'Signup failed: $e'};
     }

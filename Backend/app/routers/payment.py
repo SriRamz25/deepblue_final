@@ -253,8 +253,24 @@ async def payment_execute(
         save=True 
     )
     
-    # NOTE: RED is not a hard block — user was shown risk warning in /intent.
-    # They can still pay AND optionally flag the receiver via /flag-receiver.
+    # ── HARD BLOCK: receiver RED + amount RED → refuse execution ─────────────
+    _l2 = risk_analysis.get("debug", {}).get("layer2_amount", {})
+    _l3 = risk_analysis.get("debug", {}).get("layer3_receiver", {})
+    _receiver_red = _l3.get("receiver_risk_score", 0) >= 75
+    _amount_red   = _l2.get("amount_risk_score", 0) >= 75
+    if _receiver_red and _amount_red:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "blocked": True,
+                "message": "Transaction blocked: Suspicious receiver detected with unusually high amount.",
+                "receiver_score": round(_l3.get("receiver_risk_score", 0), 1),
+                "amount_score":   round(_l2.get("amount_risk_score", 0), 1),
+                "final_score":    round(risk_analysis.get("risk_percentage", 0), 1),
+                "risk_level":     risk_analysis.get("risk_level", "RED"),
+            },
+        )
+    # ─────────────────────────────────────────────────────────────────────────
 
     # 3. Process actual payment logic (Mock service)
     payment_result = await mock_payment_service.initiate_payment(

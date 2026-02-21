@@ -54,15 +54,7 @@ def create_user(db: Session, signup_data: SignupRequest) -> User:
     Raises:
         HTTPException: If email already exists
     """
-    # Validate UPI ID exists in sender transaction history CSV
-    valid_upis = _load_valid_sender_upis()
-    if valid_upis and signup_data.upi_id.strip().lower() not in valid_upis:
-        logger.warning(f"Signup with unknown UPI ID: {signup_data.upi_id}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"UPI ID '{signup_data.upi_id}' not found in transaction history. "
-                   f"Please use your registered UPI ID (e.g. user1@upi … user10@upi)."
-        )
+    # UPI ID validation against CSV is disabled — any valid UPI ID format is accepted.
 
     # Check if user already exists
     # Check if phone already exists

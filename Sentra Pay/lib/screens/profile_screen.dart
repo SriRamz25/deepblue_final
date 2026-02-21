@@ -483,7 +483,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           child: TextField(
             controller: controller,
             enabled: isEditing,
-            style: const TextStyle(color: PremiumStyle.primaryText),
+            style: const TextStyle(color: Color(0xFF0F172A)),
             decoration: InputDecoration(
               prefixIcon:
                   Icon(icon, color: PremiumStyle.secondaryText),

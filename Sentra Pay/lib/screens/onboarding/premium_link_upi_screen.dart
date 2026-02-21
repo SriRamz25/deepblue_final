@@ -72,7 +72,7 @@ class _PremiumLinkUPIScreenState extends State<PremiumLinkUPIScreen> {
 
               TextField(
                 controller: _upiController,
-                style: const TextStyle(color: PremiumStyle.primaryText, fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(color: Color(0xFF0F172A), fontSize: 24, fontWeight: FontWeight.bold),
                 onChanged: _validateUPI,
                 decoration: InputDecoration(
                   hintText: "user@bank",

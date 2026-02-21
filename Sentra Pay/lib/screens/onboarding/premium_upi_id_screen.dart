@@ -192,10 +192,10 @@ class _PremiumUpiIdScreenState extends State<PremiumUpiIdScreen>
                               child: TextField(
                                 controller: _upiController,
                                 cursorColor: Colors.black,
-                                style: TextStyle(fontFamily: 'Manrope', 
+                                style: const TextStyle(fontFamily: 'Manrope', 
                                   fontSize: 22,
                                   fontWeight: FontWeight.w600,
-                                  color: PremiumStyle.primaryText,
+                                  color: Color(0xFF0F172A),
                                   letterSpacing: 0.5,
                                 ),
                                 decoration: InputDecoration(
