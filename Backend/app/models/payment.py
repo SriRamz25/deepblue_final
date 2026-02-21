@@ -112,6 +112,12 @@ class PaymentIntentResponse(BaseModel):
     receiver_info: Optional[ReceiverInfo] = None
     is_flagged_receiver: bool = False  # True if this user previously flagged this receiver
 
+    # Block flag — True when receiver RED + amount RED
+    should_block: bool = False
+
+    # Layer scores exposed for Flutter UI and /execute validation
+    debug: Optional[Dict] = None
+
 
 class FlagReceiverRequest(BaseModel):
     """Request to manually flag a receiver as fraudulent."""

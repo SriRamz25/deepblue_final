@@ -380,8 +380,8 @@ class RiskOrchestrator:
 
             # ── BLOCK FLAG: fires ONLY when receiver AND amount both RED ─
             "should_block": (
-                layers["L3"]["receiver_risk_score"] >= 75
-                and layers["L2"]["amount_risk_score"] >= 75
+                layers["L3"]["receiver_risk_score"] >= 55
+                and layers["L2"]["amount_risk_score"] >= 50
             ),
 
             # Debug (layer breakdown for development)

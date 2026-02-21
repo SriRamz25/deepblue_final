@@ -256,8 +256,8 @@ async def payment_execute(
     # ── HARD BLOCK: receiver RED + amount RED → refuse execution ─────────────
     _l2 = risk_analysis.get("debug", {}).get("layer2_amount", {})
     _l3 = risk_analysis.get("debug", {}).get("layer3_receiver", {})
-    _receiver_red = _l3.get("receiver_risk_score", 0) >= 75
-    _amount_red   = _l2.get("amount_risk_score", 0) >= 75
+    _receiver_red = _l3.get("receiver_risk_score", 0) >= 55
+    _amount_red   = _l2.get("amount_risk_score", 0) >= 50
     if _receiver_red and _amount_red:
         raise HTTPException(
             status_code=400,

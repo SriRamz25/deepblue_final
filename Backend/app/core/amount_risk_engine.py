@@ -19,30 +19,50 @@ def analyze_amount_risk(amount: float, txn_stats: dict) -> dict:
     exceeds_recent_max = amount > max_overall
 
     # Scoring logic — amount is ONE signal in a combined engine.
-    # A large amount alone is NOT fraud; it may be an emergency or one-off.
-    # Keep scores moderate so a single spike doesn't dominate the final score.
-    if ratio_to_avg30 >= 10:
-        score = 45
-    elif ratio_to_avg30 >= 5:
-        score = 35
-    elif ratio_to_avg30 >= 3:
-        score = 25
-    elif ratio_to_avg30 >= 2:
-        score = 20
-    elif ratio_to_avg30 >= 1.2:
-        score = 10
+    # Two paths:
+    #   (a) No spending history (new user / first payment): use absolute amount tiers.
+    #   (b) Known history: use ratio-to-average tiers.
+    # This ensures new users paying very large amounts are flagged properly
+    # without blocking every small payment.
+    if avg_overall == 0:
+        # NEW USER — no baseline; score purely on absolute amount
+        if amount >= 75000:
+            score = 85
+        elif amount >= 40000:
+            score = 70
+        elif amount >= 20000:
+            score = 55
+        elif amount >= 10000:
+            score = 40
+        elif amount >= 5000:
+            score = 25
+        else:
+            score = 10
     else:
-        score = 5
-    if exceeds_recent_max:
-        score += 5
-    score = min(score, 70)
+        # RETURNING USER — score relative to spending history
+        if ratio_to_avg30 >= 20:
+            score = 85
+        elif ratio_to_avg30 >= 10:
+            score = 70
+        elif ratio_to_avg30 >= 5:
+            score = 55
+        elif ratio_to_avg30 >= 3:
+            score = 40
+        elif ratio_to_avg30 >= 2:
+            score = 25
+        elif ratio_to_avg30 >= 1.2:
+            score = 15
+        else:
+            score = 5
+        if exceeds_recent_max:
+            score = min(score + 5, 100)
 
     # Risk level
     if score <= 15:
         risk_level = "LOW"
     elif score <= 40:
         risk_level = "MEDIUM"
-    elif score <= 60:
+    elif score <= 65:
         risk_level = "HIGH"
     else:
         risk_level = "VERY_HIGH"
