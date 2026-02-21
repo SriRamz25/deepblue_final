@@ -7,7 +7,7 @@ class ApiConfig {
   /// Base URL of the FastAPI backend (no trailing slash).
   static const String baseUrl = String.fromEnvironment(
     'API_URL',
-    defaultValue: 'http://localhost:8000',
+    defaultValue: 'https://deepblue-final.onrender.com',
   );
 
   /// Timeout for API calls in milliseconds.
